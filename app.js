@@ -12,7 +12,7 @@ const benchmarkRoutes = require('./routes/benchmark'); // Assuming you have a be
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// All Routes
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/tax', taxRoutes);
