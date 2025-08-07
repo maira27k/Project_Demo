@@ -126,6 +126,32 @@ SELECT * FROM finance_portfolio_manager.transactions;
 SELECT * FROM finance_portfolio_manager.benchmark;
 
 
+CREATE TABLE market_data (
+  symbol VARCHAR(20) PRIMARY KEY,
+  price DECIMAL(10,2),
+  change_amount DECIMAL(10,2),
+  change_percent DECIMAL(5,2),
+  volume BIGINT,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tax_calculations (
+  year INT PRIMARY KEY,
+  stcg DECIMAL(12,2),
+  ltcg DECIMAL(12,2),
+  dividend_income DECIMAL(12,2),
+  total_tax DECIMAL(12,2),
+  calculation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE portfolio_snapshots (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  portfolio_value DECIMAL(12,2),
+  benchmark_value DECIMAL(12,2),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
 
 
 
