@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Manager Pro</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="light-theme">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-chart-line"></i>
+        <span>Portfolio Pro</span>
+      </div>
+      
+      <div class="header-controls">
+        <div class="market-status">
+          <span class="status-indicator" id="marketStatus"></span>
+          <span id="marketStatusText">Market Closed</span>
+        </div>
+        
+        <button class="theme-toggle" id="themeToggle">
+          <i class="fas fa-moon"></i>
+        </button>
+        
+        <button class="download-btn" id="downloadPortfolio">
+          <i class="fas fa-download"></i>
+          <span>Download</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="sidebar">
+    <ul class="nav-menu">
+      <li class="nav-item active" data-tab="dashboard">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+      </li>
+      <li class="nav-item" data-tab="portfolio">
+        <i class="fas fa-briefcase"></i>
+        <span>Portfolio</span>
+      </li>
+      <li class="nav-item" data-tab="transactions">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Transactions</span>
+      </li>
+      <li class="nav-item" data-tab="performance">
+        <i class="fas fa-chart-area"></i>
+        <span>Performance</span>
+      </li>
+      <li class="nav-item" data-tab="tax">
+        <i class="fas fa-calculator"></i>
+        <span>Tax Records</span>
+      </li>
+      <li class="nav-item" data-tab="benchmark">
+        <i class="fas fa-chart-bar"></i>
+        <span>Benchmark</span>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Dashboard Tab -->
+    <div id="dashboard" class="tab-content active">
+      <div class="dashboard-header">
+        <h1>Portfolio Overview</h1>
+        <div class="last-updated">
+          Last updated: <span id="lastUpdated">--</span>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Total Value</h3>
+            <div class="stat-value" id="totalValue">₹0.00</div>
+            <div class="stat-change positive" id="totalChange">+0.00%</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Day's Gain</h3>
+            <div class="stat-value" id="dayGain">₹0.00</div>
+            <div class="stat-change" id="dayGainPercent">0.00%</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Total Gain</h3>
+            <div class="stat-value" id="totalGain">₹0.00</div>
+            <div class="stat-change" id="totalGainPercent">0.00%</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Holdings</h3>
+            <div class="stat-value" id="totalHoldings">0</div>
+            <div class="stat-subtext">Assets</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-section">
+        <div class="chart-card">
+          <div class="card-header">
+            <h3>Portfolio Performance</h3>
+            <div class="chart-controls">
+              <select id="performancePeriod">
+                <option value="1D">1D</option>
+                <option value="1W">1W</option>
+                <option value="1M" selected>1M</option>
+                <option value="3M">3M</option>
+                <option value="1Y">1Y</option>
+              </select>
+            </div>
+          </div>
+          <canvas id="portfolioChart"></canvas>
+        </div>
+      </div>
+
+      <div class="top-performers">
+        <div class="performers-card">
+          <h3>Top Gainers</h3>
+          <div id="topGainers" class="performers-list">
+            <!-- Dynamic content -->
+          </div>
+        </div>
+        
+        <div class="performers-card">
+          <h3>Top Losers</h3>
+          <div id="topLosers" class="performers-list">
+            <!-- Dynamic content -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Portfolio Tab -->
+    <div id="portfolio" class="tab-content">
+      <div class="section-header">
+        <h2>Portfolio Holdings</h2>
+        <button class="btn btn-primary" id="addHolding">
+          <i class="fas fa-plus"></i> Add Holding
+        </button>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table" id="portfolioTable">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Avg Cost</th>
+              <th>Current Price</th>
+              <th>Market Value</th>
+              <th>Gain/Loss</th>
+              <th>Gain/Loss %</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Transactions Tab -->
+    <div id="transactions" class="tab-content">
+      <div class="section-header">
+        <h2>Transaction History</h2>
+        <button class="btn btn-primary" id="addTransaction">
+          <i class="fas fa-plus"></i> Add Transaction
+        </button>
+      </div>
+      
+      <div class="filters">
+        <select id="transactionType">
+          <option value="">All Types</option>
+          <option value="buy">Buy</option>
+          <option value="sell">Sell</option>
+          <option value="dividend">Dividend</option>
+        </select>
+        <input type="date" id="fromDate">
+        <input type="date" id="toDate">
+        <button class="btn btn-secondary" id="filterTransactions">Filter</button>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table" id="transactionsTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Symbol</th>
+              <th>Type</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Performance Tab -->
+    <div id="performance" class="tab-content">
+      <div class="section-header">
+        <h2>Performance Analytics</h2>
+      </div>
+      
+      <div class="performance-metrics">
+        <div class="metric-card">
+          <h4>Sharpe Ratio</h4>
+          <div class="metric-value" id="sharpeRatio">--</div>
+        </div>
+        <div class="metric-card">
+          <h4>Volatility</h4>
+          <div class="metric-value" id="volatility">--%</div>
+        </div>
+        <div class="metric-card">
+          <h4>Max Drawdown</h4>
+          <div class="metric-value" id="maxDrawdown">--%</div>
+        </div>
+        <div class="metric-card">
+          <h4>Beta</h4>
+          <div class="metric-value" id="beta">--</div>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <div class="card-header">
+          <h3>Performance vs Benchmark</h3>
+        </div>
+        <canvas id="performanceChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Tax Tab -->
+    <div id="tax" class="tab-content">
+      <div class="section-header">
+        <h2>Tax Calculation (AY 2024-25)</h2>
+        <button class="btn btn-primary" id="calculateTax">
+          <i class="fas fa-calculator"></i> Calculate Tax
+        </button>
+      </div>
+      
+      <div class="tax-summary">
+        <div class="tax-card">
+          <h4>Short Term Capital Gains</h4>
+          <div class="tax-amount" id="stcg">₹0.00</div>
+          <div class="tax-rate">15% Tax Rate</div>
+        </div>
+        <div class="tax-card">
+          <h4>Long Term Capital Gains</h4>
+          <div class="tax-amount" id="ltcg">₹0.00</div>
+          <div class="tax-rate">10% Tax Rate (>₹1L)</div>
+        </div>
+        <div class="tax-card">
+          <h4>Dividend Income</h4>
+          <div class="tax-amount" id="dividend">₹0.00</div>
+          <div class="tax-rate">As per slab</div>
+        </div>
+        <div class="tax-card total-tax">
+          <h4>Total Tax Liability</h4>
+          <div class="tax-amount" id="totalTax">₹0.00</div>
+        </div>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table" id="taxTable">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Buy Date</th>
+              <th>Sell Date</th>
+              <th>Holding Period</th>
+              <th>Buy Price</th>
+              <th>Sell Price</th>
+              <th>Gain/Loss</th>
+              <th>Tax Type</th>
+              <th>Tax Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Benchmark Tab -->
+    <div id="benchmark" class="tab-content">
+      <div class="section-header">
+        <h2>Market Indices</h2>
+      </div>
+      
+      <div class="benchmark-grid">
+        <div class="benchmark-card">
+          <h4>NIFTY 50</h4>
+          <div class="benchmark-value" id="nifty50">--</div>
+          <div class="benchmark-change" id="nifty50Change">--</div>
+        </div>
+        <div class="benchmark-card">
+          <h4>SENSEX</h4>
+          <div class="benchmark-value" id="sensex">--</div>
+          <div class="benchmark-change" id="sensexChange">--</div>
+        </div>
+        <div class="benchmark-card">
+          <h4>BANK NIFTY</h4>
+          <div class="benchmark-value" id="bankNifty">--</div>
+          <div class="benchmark-change" id="bankNiftyChange">--</div>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <canvas id="benchmarkChart"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <div id="addHoldingModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Add New Holding</h3>
+      <form id="addHoldingForm">
+        <div class="form-group">
+          <label for="symbol">Symbol</label>
+          <input type="text" id="symbol" required>
+        </div>
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input type="number" id="quantity" required>
+        </div>
+        <div class="form-group">
+          <label for="avgPrice">Average Price</label>
+          <input type="number" id="avgPrice" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Holding</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/portfolio.js"></script>
+  <script src="js/transactions.js"></script>
+  <script src="js/performance.js"></script>
+  <script src="js/tax.js"></script>
+  <script src="js/benchmark.js"></script>
+  <script src="js/download.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
