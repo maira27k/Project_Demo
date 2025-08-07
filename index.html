@@ -1,500 +1,387 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Portfolio Manager Pro</title>
-
-  <!-- Bootstrap -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-  
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-
-  <!-- Chart.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-
-  <!-- Custom Styles -->
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/responsive.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body data-theme="dark">
-  <!-- Top Navigation -->
-  <nav class="top-navbar">
-    <div class="d-flex justify-content-between align-items-center">
-      <div class="d-flex align-items-center">
-        <button class="mobile-menu-toggle btn btn-sm me-3" onclick="toggleSidebar()">
-          <i class="fas fa-bars"></i>
-        </button>
-        <div class="nav-brand">
-          <i class="fas fa-chart-line me-2"></i>
-          Portfolio Pro
-        </div>
+<body class="light-theme">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <i class="fas fa-chart-line"></i>
+        <span>Portfolio Pro</span>
       </div>
-      <div class="nav-controls">
-        <span class="status-indicator status-online"></span>
-        <span class="small text-secondary">Live Market Data</span>
-        <button class="theme-toggle" onclick="toggleTheme()">
-          <i class="fas fa-sun" id="theme-icon"></i>
+      
+      <div class="header-controls">
+        <div class="market-status">
+          <span class="status-indicator" id="marketStatus"></span>
+          <span id="marketStatusText">Market Closed</span>
+        </div>
+        
+        <button class="theme-toggle" id="themeToggle">
+          <i class="fas fa-moon"></i>
+        </button>
+        
+        <button class="download-btn" id="downloadPortfolio">
+          <i class="fas fa-download"></i>
+          <span>Download</span>
         </button>
       </div>
     </div>
+  </header>
+
+  <!-- Navigation -->
+  <nav class="sidebar">
+    <ul class="nav-menu">
+      <li class="nav-item active" data-tab="dashboard">
+        <i class="fas fa-tachometer-alt"></i>
+        <span>Dashboard</span>
+      </li>
+      <li class="nav-item" data-tab="portfolio">
+        <i class="fas fa-briefcase"></i>
+        <span>Portfolio</span>
+      </li>
+      <li class="nav-item" data-tab="transactions">
+        <i class="fas fa-exchange-alt"></i>
+        <span>Transactions</span>
+      </li>
+      <li class="nav-item" data-tab="performance">
+        <i class="fas fa-chart-area"></i>
+        <span>Performance</span>
+      </li>
+      <li class="nav-item" data-tab="tax">
+        <i class="fas fa-calculator"></i>
+        <span>Tax Records</span>
+      </li>
+      <li class="nav-item" data-tab="benchmark">
+        <i class="fas fa-chart-bar"></i>
+        <span>Benchmark</span>
+      </li>
+    </ul>
   </nav>
 
-  <!-- Price Ticker -->
-  <div class="price-ticker">
-    <div class="ticker-content" id="priceTicker">
-      <span class="ticker-item">NIFTY: 18,245 <span class="positive">+0.85%</span></span>
-      <span class="ticker-item">SENSEX: 61,872 <span class="positive">+1.12%</span></span>
-      <span class="ticker-item">BANK NIFTY: 42,156 <span class="negative">-0.45%</span></span>
-      <span class="ticker-item">USD/INR: 82.45 <span class="positive">+0.23%</span></span>
-      <span class="ticker-item">GOLD: ₹59,240 <span class="positive">+0.67%</span></span>
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Dashboard Tab -->
+    <div id="dashboard" class="tab-content active">
+      <div class="dashboard-header">
+        <h1>Portfolio Overview</h1>
+        <div class="last-updated">
+          Last updated: <span id="lastUpdated">--</span>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-wallet"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Total Value</h3>
+            <div class="stat-value" id="totalValue">₹0.00</div>
+            <div class="stat-change positive" id="totalChange">+0.00%</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Day's Gain</h3>
+            <div class="stat-value" id="dayGain">₹0.00</div>
+            <div class="stat-change" id="dayGainPercent">0.00%</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-trophy"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Total Gain</h3>
+            <div class="stat-value" id="totalGain">₹0.00</div>
+            <div class="stat-change" id="totalGainPercent">0.00%</div>
+          </div>
+        </div>
+        
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <div class="stat-content">
+            <h3>Holdings</h3>
+            <div class="stat-value" id="totalHoldings">0</div>
+            <div class="stat-subtext">Assets</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="charts-section">
+        <div class="chart-card">
+          <div class="card-header">
+            <h3>Portfolio Performance</h3>
+            <div class="chart-controls">
+              <select id="performancePeriod">
+                <option value="1D">1D</option>
+                <option value="1W">1W</option>
+                <option value="1M" selected>1M</option>
+                <option value="3M">3M</option>
+                <option value="1Y">1Y</option>
+              </select>
+            </div>
+          </div>
+          <canvas id="portfolioChart"></canvas>
+        </div>
+      </div>
+
+      <div class="top-performers">
+        <div class="performers-card">
+          <h3>Top Gainers</h3>
+          <div id="topGainers" class="performers-list">
+            <!-- Dynamic content -->
+          </div>
+        </div>
+        
+        <div class="performers-card">
+          <h3>Top Losers</h3>
+          <div id="topLosers" class="performers-list">
+            <!-- Dynamic content -->
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="container-fluid">
-    <div class="row">
-      <!-- Sidebar -->
-      <div class="col-lg-2 col-md-3 p-0">
-        <div class="sidebar" id="sidebar">
-          <ul class="sidebar-nav">
-            <li><a href="#" class="nav-link active" data-section="overview"><i class="fas fa-tachometer-alt"></i>Dashboard</a></li>
-            <li><a href="#" class="nav-link" data-section="portfolio"><i class="fas fa-briefcase"></i>Portfolio</a></li>
-            <li><a href="#" class="nav-link" data-section="trading"><i class="fas fa-exchange-alt"></i>Trading</a></li>
-            <li><a href="#" class="nav-link" data-section="market"><i class="fas fa-chart-bar"></i>Market Data</a></li>
-            <li><a href="#" class="nav-link" data-section="analysis"><i class="fas fa-chart-pie"></i>Analysis</a></li>
-            <li><a href="#" class="nav-link" data-section="tax"><i class="fas fa-calculator"></i>Tax Calculator</a></li>
-            <li><a href="#" class="nav-link" data-section="reports"><i class="fas fa-file-download"></i>Reports</a></li>
-            <li><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i>Settings</a></li>
-          </ul>
+    <!-- Portfolio Tab -->
+    <div id="portfolio" class="tab-content">
+      <div class="section-header">
+        <h2>Portfolio Holdings</h2>
+        <button class="btn btn-primary" id="addHolding">
+          <i class="fas fa-plus"></i> Add Holding
+        </button>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table" id="portfolioTable">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Name</th>
+              <th>Quantity</th>
+              <th>Avg Cost</th>
+              <th>Current Price</th>
+              <th>Market Value</th>
+              <th>Gain/Loss</th>
+              <th>Gain/Loss %</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Transactions Tab -->
+    <div id="transactions" class="tab-content">
+      <div class="section-header">
+        <h2>Transaction History</h2>
+        <button class="btn btn-primary" id="addTransaction">
+          <i class="fas fa-plus"></i> Add Transaction
+        </button>
+      </div>
+      
+      <div class="filters">
+        <select id="transactionType">
+          <option value="">All Types</option>
+          <option value="buy">Buy</option>
+          <option value="sell">Sell</option>
+          <option value="dividend">Dividend</option>
+        </select>
+        <input type="date" id="fromDate">
+        <input type="date" id="toDate">
+        <button class="btn btn-secondary" id="filterTransactions">Filter</button>
+      </div>
+      
+      <div class="table-container">
+        <table class="data-table" id="transactionsTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Symbol</th>
+              <th>Type</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total Value</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Performance Tab -->
+    <div id="performance" class="tab-content">
+      <div class="section-header">
+        <h2>Performance Analytics</h2>
+      </div>
+      
+      <div class="performance-metrics">
+        <div class="metric-card">
+          <h4>Sharpe Ratio</h4>
+          <div class="metric-value" id="sharpeRatio">--</div>
+        </div>
+        <div class="metric-card">
+          <h4>Volatility</h4>
+          <div class="metric-value" id="volatility">--%</div>
+        </div>
+        <div class="metric-card">
+          <h4>Max Drawdown</h4>
+          <div class="metric-value" id="maxDrawdown">--%</div>
+        </div>
+        <div class="metric-card">
+          <h4>Beta</h4>
+          <div class="metric-value" id="beta">--</div>
         </div>
       </div>
+      
+      <div class="chart-card">
+        <div class="card-header">
+          <h3>Performance vs Benchmark</h3>
+        </div>
+        <canvas id="performanceChart"></canvas>
+      </div>
+    </div>
 
-      <!-- Main Content -->
-      <div class="col-lg-10 col-md-9">
-        <div class="main-content">
-          
-          <!-- Overview Section -->
-          <div id="overview-section" class="content-section">
-            <!-- Portfolio Summary Cards -->
-            <div class="summary-cards">
-              <div class="summary-card">
-                <div class="summary-value text-primary" id="totalValue">₹5,00,000</div>
-                <div class="summary-label">Total Portfolio Value</div>
-                <div class="change-indicator positive">
-                  <i class="fas fa-arrow-up"></i>
-                  +2.4% Today
-                </div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-value text-success">₹12,450</div>
-                <div class="summary-label">Today's P&L</div>
-                <div class="change-indicator positive">
-                  <i class="fas fa-arrow-up"></i>
-                  +2.56%
-                </div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-value text-info">₹45,670</div>
-                <div class="summary-label">Total P&L</div>
-                <div class="change-indicator positive">
-                  <i class="fas fa-arrow-up"></i>
-                  +10.05%
-                </div>
-              </div>
-              <div class="summary-card">
-                <div class="summary-value text-warning">₹1,25,000</div>
-                <div class="summary-label">Available Balance</div>
-                <div class="change-indicator">
-                  <i class="fas fa-wallet"></i>
-                  Ready to Trade
-                </div>
-              </div>
-            </div>
-
-            <!-- Charts Row -->
-            <div class="row">
-              <div class="col-lg-6 col-md-12">
-                <div class="dashboard-card">
-                  <div class="card-header">
-                    <h5 class="card-title">Asset Allocation</h5>
-                  </div>
-                  <div class="chart-container small">
-                    <canvas id="portfolioPieChart"></canvas>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-6 col-md-12">
-                <div class="dashboard-card">
-                  <div class="card-header">
-                    <h5 class="card-title">Portfolio Performance</h5>
-                  </div>
-                  <div class="chart-container small">
-                    <canvas id="performanceChart"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Market Overview -->
-            <div class="dashboard-card">
-              <div class="card-header">
-                <h5 class="card-title">Market Overview</h5>
-                <span class="small text-secondary">Live Data</span>
-              </div>
-              <div id="benchmarkSection">
-                <div class="row">
-                  <div class="col-md-3 col-6 text-center">
-                    <div class="h4 text-primary">18,245</div>
-                    <div class="small text-secondary">NIFTY 50</div>
-                    <div class="small positive">+0.85%</div>
-                  </div>
-                  <div class="col-md-3 col-6 text-center">
-                    <div class="h4 text-primary">61,872</div>
-                    <div class="small text-secondary">SENSEX</div>
-                    <div class="small positive">+1.12%</div>
-                  </div>
-                  <div class="col-md-3 col-6 text-center">
-                    <div class="h4 text-primary">42,156</div>
-                    <div class="small text-secondary">BANK NIFTY</div>
-                    <div class="small negative">-0.45%</div>
-                  </div>
-                  <div class="col-md-3 col-6 text-center">
-                    <div class="h4 text-primary">82.45</div>
-                    <div class="small text-secondary">USD/INR</div>
-                    <div class="small positive">+0.23%</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Portfolio Section -->
-          <div id="portfolio-section" class="content-section" style="display: none;">
-            <div class="dashboard-card">
-              <div class="card-header">
-                <h5 class="card-title">My Holdings</h5>
-              </div>
-              <div class="table-responsive">
-                <table class="market-table">
-                  <thead>
-                    <tr>
-                      <th>Symbol</th>
-                      <th>Qty</th>
-                      <th>Avg Price</th>
-                      <th>Current Price</th>
-                      <th>P&L</th>
-                      <th>P&L %</th>
-                      <th>Value</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><strong>RELIANCE</strong></td>
-                      <td>100</td>
-                      <td>₹2,400</td>
-                      <td>₹2,456</td>
-                      <td class="positive">+₹5,600</td>
-                      <td class="positive">+2.33%</td>
-                      <td>₹2,45,600</td>
-                    </tr>
-                    <tr>
-                      <td><strong>TCS</strong></td>
-                      <td>50</td>
-                      <td>₹3,200</td>
-                      <td>₹3,245</td>
-                      <td class="positive">+₹2,250</td>
-                      <td class="positive">+1.41%</td>
-                      <td>₹1,62,250</td>
-                    </tr>
-                    <tr>
-                      <td><strong>GOLD</strong></td>
-                      <td>10g</td>
-                      <td>₹5,800</td>
-                      <td>₹5,924</td>
-                      <td class="positive">+₹1,240</td>
-                      <td class="positive">+2.14%</td>
-                      <td>₹59,240</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Trading Section -->
-          <div id="trading-section" class="content-section" style="display: none;">
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="dashboard-card">
-                  <div class="card-header">
-                    <h5 class="card-title">Place Order</h5>
-                  </div>
-                  <div class="trade-form">
-                    <div class="form-group">
-                      <label class="form-label">Asset Name</label>
-                      <input type="text" id="tradeAsset" class="form-control" placeholder="Enter stock symbol (e.g., RELIANCE)">
-                    </div>
-                    <div class="row">
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="form-label">Quantity</label>
-                          <input type="number" id="tradeQty" class="form-control" placeholder="Enter quantity">
-                        </div>
-                      </div>
-                      <div class="col-md-6">
-                        <div class="form-group">
-                          <label class="form-label">Order Type</label>
-                          <select class="form-control" id="orderType">
-                            <option value="market">Market</option>
-                            <option value="limit">Limit</option>
-                            <option value="stop-loss">Stop Loss</option>
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="d-flex gap-2">
-                      <button id="buyBtn" class="btn btn-success flex-fill">
-                        <i class="fas fa-arrow-up"></i> BUY
-                      </button>
-                      <button id="sellBtn" class="btn btn-danger flex-fill">
-                        <i class="fas fa-arrow-down"></i> SELL
-                      </button>
-                    </div>
-                    <div id="tradeResult" class="mt-3 text-info"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="col-lg-6">
-                <div class="dashboard-card">
-                  <div class="card-header">
-                    <h5 class="card-title">Order Book</h5>
-                  </div>
-                  <div class="table-responsive">
-                    <table class="market-table">
-                      <thead>
-                        <tr>
-                          <th>Symbol</th>
-                          <th>Qty</th>
-                          <th>Price</th>
-                          <th>Status</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody id="orderBook">
-                        <tr>
-                          <td>RELIANCE</td>
-                          <td>10</td>
-                          <td>₹2,456</td>
-                          <td><span class="badge bg-success">Executed</span></td>
-                          <td><button class="btn btn-sm btn-outline-secondary">View</button></td>
-                        </tr>
-                        <tr>
-                          <td>TCS</td>
-                          <td>5</td>
-                          <td>₹3,245</td>
-                          <td><span class="badge bg-warning">Pending</span></td>
-                          <td><button class="btn btn-sm btn-outline-danger">Cancel</button></td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Market Data Section -->
-          <div id="market-section" class="content-section" style="display: none;">
-            <div class="dashboard-card">
-              <div class="card-header">
-                <h5 class="card-title">Live Market Data</h5>
-              </div>
-              <div class="table-responsive">
-                <table class="market-table">
-                  <thead>
-                    <tr>
-                      <th>Symbol</th>
-                      <th>LTP</th>
-                      <th>Change</th>
-                      <th>% Change</th>
-                      <th>Volume</th>
-                      <th>High</th>
-                      <th>Low</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><strong>RELIANCE</strong></td>
-                      <td>₹2,456</td>
-                      <td class="positive">+56</td>
-                      <td class="positive">+2.33%</td>
-                      <td>12.5M</td>
-                      <td>₹2,470</td>
-                      <td>₹2,420</td>
-                    </tr>
-                    <tr>
-                      <td><strong>TCS</strong></td>
-                      <td>₹3,245</td>
-                      <td class="positive">+45</td>
-                      <td class="positive">+1.41%</td>
-                      <td>8.2M</td>
-                      <td>₹3,260</td>
-                      <td>₹3,200</td>
-                    </tr>
-                    <tr>
-                      <td><strong>INFY</strong></td>
-                      <td>₹1,456</td>
-                      <td class="negative">-12</td>
-                      <td class="negative">-0.82%</td>
-                      <td>15.7M</td>
-                      <td>₹1,470</td>
-                      <td>₹1,445</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-
-          <!-- Analysis Section -->
-          <div id="analysis-section" class="content-section" style="display: none;">
-            <div class="row">
-              <div class="col-12">
-                <div class="dashboard-card">
-                  <div class="card-header">
-                    <h5 class="card-title">Portfolio Analysis</h5>
-                  </div>
-                  <div class="chart-container">
-                    <canvas id="analysisChart"></canvas>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tax Calculator Section -->
-          <div id="tax-section" class="content-section" style="display: none;">
-            <div class="dashboard-card">
-              <div class="card-header">
-                <h5 class="card-title">Tax Calculator</h5>
-                <span class="small text-secondary">Calculate your capital gains tax</span>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label class="form-label">Short Term Capital Gains</label>
-                    <input type="number" id="capGains" class="form-control" placeholder="Enter STCG amount">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Long Term Capital Gains</label>
-                    <input type="number" id="ltcgGains" class="form-control" placeholder="Enter LTCG amount">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label">Dividend Income</label>
-                    <input type="number" id="dividends" class="form-control" placeholder="Enter dividend amount">
-                  </div>
-                  <button id="taxBtn" class="btn btn-primary">Calculate Tax</button>
-                </div>
-                <div class="col-md-6">
-                  <div id="taxResult" class="mt-3">
-                    <div class="alert alert-info">
-                      <h6>Tax Calculation Results</h6>
-                      <p class="mb-1"><strong>STCG Tax (15%):</strong> <span id="stcgTax">₹0</span></p>
-                      <p class="mb-1"><strong>LTCG Tax (10%):</strong> <span id="ltcgTax">₹0</span></p>
-                      <p class="mb-1"><strong>Dividend Tax (30%):</strong> <span id="divTax">₹0</span></p>
-                      <hr>
-                      <p class="mb-0"><strong>Total Tax:</strong> <span id="totalTax">₹0</span></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Reports Section -->
-          <div id="reports-section" class="content-section" style="display: none;">
-            <div class="dashboard-card">
-              <div class="card-header">
-                <h5 class="card-title">Download Reports</h5>
-                <span class="small text-secondary">Export your portfolio data</span>
-              </div>
-              <div class="row">
-                <div class="col-md-4">
-                  <div class="text-center p-3">
-                    <i class="fas fa-file-pdf fa-3x text-danger mb-3"></i>
-                    <h6>Portfolio Summary</h6>
-                    <p class="small text-secondary">Complete portfolio overview with charts</p>
-                    <button class="btn btn-danger" id="downloadPDF">
-                      <i class="fas fa-download"></i> Download PDF
-                    </button>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="text-center p-3">
-                    <i class="fas fa-file-csv fa-3x text-success mb-3"></i>
-                    <h6>Holdings Data</h6>
-                    <p class="small text-secondary">Raw data for analysis in Excel</p>
-                    <button class="btn btn-success" id="downloadCSV">
-                      <i class="fas fa-download"></i> Download CSV
-                    </button>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="text-center p-3">
-                    <i class="fas fa-file-alt fa-3x text-primary mb-3"></i>
-                    <h6>Tax Report</h6>
-                    <p class="small text-secondary">Annual tax calculation report</p>
-                    <button class="btn btn-primary" id="downloadTaxReport">
-                      <i class="fas fa-download"></i> Download Report
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Settings Section -->
-          <div id="settings-section" class="content-section" style="display: none;">
-            <div class="dashboard-card">
-              <div class="card-header">
-                <h5 class="card-title">Settings</h5>
-              </div>
-              <div class="row">
-                <div class="col-md-6">
-                  <h6>Appearance</h6>
-                  <div class="form-group">
-                    <label class="form-label">Theme</label>
-                    <select class="form-control" id="themeSelect">
-                      <option value="dark">Dark Theme</option>
-                      <option value="light">Light Theme</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <h6>Notifications</h6>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
-                    <label class="form-check-label">Email Notifications</label>
-                  </div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="smsNotifications">
-                    <label class="form-check-label">SMS Notifications</label>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
+    <!-- Tax Tab -->
+    <div id="tax" class="tab-content">
+      <div class="section-header">
+        <h2>Tax Calculation (AY 2024-25)</h2>
+        <button class="btn btn-primary" id="calculateTax">
+          <i class="fas fa-calculator"></i> Calculate Tax
+        </button>
+      </div>
+      
+      <div class="tax-summary">
+        <div class="tax-card">
+          <h4>Short Term Capital Gains</h4>
+          <div class="tax-amount" id="stcg">₹0.00</div>
+          <div class="tax-rate">15% Tax Rate</div>
+        </div>
+        <div class="tax-card">
+          <h4>Long Term Capital Gains</h4>
+          <div class="tax-amount" id="ltcg">₹0.00</div>
+          <div class="tax-rate">10% Tax Rate (>₹1L)</div>
+        </div>
+        <div class="tax-card">
+          <h4>Dividend Income</h4>
+          <div class="tax-amount" id="dividend">₹0.00</div>
+          <div class="tax-rate">As per slab</div>
+        </div>
+        <div class="tax-card total-tax">
+          <h4>Total Tax Liability</h4>
+          <div class="tax-amount" id="totalTax">₹0.00</div>
         </div>
       </div>
+      
+      <div class="table-container">
+        <table class="data-table" id="taxTable">
+          <thead>
+            <tr>
+              <th>Symbol</th>
+              <th>Buy Date</th>
+              <th>Sell Date</th>
+              <th>Holding Period</th>
+              <th>Buy Price</th>
+              <th>Sell Price</th>
+              <th>Gain/Loss</th>
+              <th>Tax Type</th>
+              <th>Tax Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Benchmark Tab -->
+    <div id="benchmark" class="tab-content">
+      <div class="section-header">
+        <h2>Market Indices</h2>
+      </div>
+      
+      <div class="benchmark-grid">
+        <div class="benchmark-card">
+          <h4>NIFTY 50</h4>
+          <div class="benchmark-value" id="nifty50">--</div>
+          <div class="benchmark-change" id="nifty50Change">--</div>
+        </div>
+        <div class="benchmark-card">
+          <h4>SENSEX</h4>
+          <div class="benchmark-value" id="sensex">--</div>
+          <div class="benchmark-change" id="sensexChange">--</div>
+        </div>
+        <div class="benchmark-card">
+          <h4>BANK NIFTY</h4>
+          <div class="benchmark-value" id="bankNifty">--</div>
+          <div class="benchmark-change" id="bankNiftyChange">--</div>
+        </div>
+      </div>
+      
+      <div class="chart-card">
+        <canvas id="benchmarkChart"></canvas>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modals -->
+  <div id="addHoldingModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3>Add New Holding</h3>
+      <form id="addHoldingForm">
+        <div class="form-group">
+          <label for="symbol">Symbol</label>
+          <input type="text" id="symbol" required>
+        </div>
+        <div class="form-group">
+          <label for="quantity">Quantity</label>
+          <input type="number" id="quantity" required>
+        </div>
+        <div class="form-group">
+          <label for="avgPrice">Average Price</label>
+          <input type="number" id="avgPrice" step="0.01" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Holding</button>
+      </form>
     </div>
   </div>
 
   <!-- Scripts -->
-  <script type="module" src="js/main.js"></script>
-  <script type="module" src="js/chart.js"></script>
-  <script type="module" src="js/tax.js"></script>
-  <script type="module" src="js/trade.js"></script>
-  <script type="module" src="js/benchmark.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/theme.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/portfolio.js"></script>
+  <script src="js/transactions.js"></script>
+  <script src="js/performance.js"></script>
+  <script src="js/tax.js"></script>
+  <script src="js/benchmark.js"></script>
+  <script src="js/download.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
