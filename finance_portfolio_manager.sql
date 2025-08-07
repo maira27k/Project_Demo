@@ -23,6 +23,7 @@ CREATE TABLE transactions (
     FOREIGN KEY (item_id) REFERENCES portfolio_items(item_id) ON DELETE CASCADE
 );
 
+-- Benchmark Table
 CREATE TABLE benchmark (
     benchmark_id INT PRIMARY KEY AUTO_INCREMENT,
     symbol VARCHAR(20) NOT NULL,
@@ -32,15 +33,6 @@ CREATE TABLE benchmark (
     volume VARCHAR(20),
     last_updated DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
-INSERT INTO Benchmark (symbol, name, price, change_percent, volume)
-VALUES
-('NIFTY', 'NIFTY 50', 18245.00, 0.85, '145.2M'),
-('SENSEX', 'SENSEX', 61872.00, 1.12, '234.5M'),
-('BANKNIFTY', 'BANK NIFTY', 42156.00, -0.45, '89.3M'),
-('USDINR', 'USD/INR', 82.45, 0.23, '2.1B'),
-('GOLD', 'GOLD', 59240.00, 0.67, '45.8K');
-
 
 -- Taxes Table
 CREATE TABLE tax_records (
@@ -110,6 +102,19 @@ INSERT INTO performance_log (log_id, item_id, date, value) VALUES
 (9, 5, '2025-06-01', 430.00),
 (10, 5, '2025-07-01', 435.00);
 
+INSERT INTO benchmark (benchmark_id, symbol, name, price, change_percent, volume)
+VALUES
+(1, 'NIFTY', 'NIFTY 50', 18245.00, 0.85, '145.2M'),
+(2, 'SENSEX', 'SENSEX', 61872.00, 1.12, '234.5M'),
+(3, 'BANKNIFTY', 'BANK NIFTY', 42156.00, -0.45, '89.3M'),
+(4, 'USDINR', 'USD/INR', 82.45, 0.23, '2.1B'),
+(5, 'GOLD', 'GOLD', 59240.00, 0.67, '45.8K'),
+(6, 'NASDAQ', 'NASDAQ Composite', 14356.25, 1.14, '3.2B'),
+(7, 'DOWJONES', 'Dow Jones Industrial Average', 35267.89, 0.87, '2.4B'),
+(8, 'FTSE', 'FTSE 100', 7412.63, -0.12, '1.1B'),
+(9, 'BTCUSD', 'Bitcoin/USD', 47682.15, 2.45, '38.9K'),
+(10, 'ETHUSD', 'Ethereum/USD', 3167.42, 1.88, '21.5K');
+
 SELECT * FROM finance_portfolio_manager.performance_log;
 
 SELECT * FROM finance_portfolio_manager.portfolio_items;
@@ -117,6 +122,9 @@ SELECT * FROM finance_portfolio_manager.portfolio_items;
 SELECT * FROM finance_portfolio_manager.tax_records;
 
 SELECT * FROM finance_portfolio_manager.transactions;
+
+SELECT * FROM finance_portfolio_manager.benchmark;
+
 
 
 
